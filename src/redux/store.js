@@ -26,7 +26,7 @@ const store = configureStore({
     [weatherApi.reducerPath]: weatherApi.reducer,
     cities: persistedReducer,
   },
-  // middleware,
+
   middleware: getDefaultMiddleware => [
     ...getDefaultMiddleware({
       serializableCheck: {
@@ -40,6 +40,6 @@ const store = configureStore({
 
 const persistor = persistStore(store);
 
-export default { store, persistor };
+export { store, persistor };
 
 setupListeners(store.dispatch);

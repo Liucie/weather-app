@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-const addCityCard = createAction('cities/add');
+const addCity = createAction('cities/add');
 
-const deleteCityCard = createAction('cities/delete');
+const deleteCity = createAction('cities/remove');
 
-export default { addCityCard, deleteCityCard };
+export const actions = { addCity, deleteCity };

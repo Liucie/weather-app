@@ -1,24 +1,28 @@
-import { connect } from 'react-redux';
-import citiesActions from '../../redux/cities/cities-actions';
 import { Card } from '../Card/Card';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCity } from '../../redux/cities/cities-reducer';
+import { citiesSelector } from '../../redux/cities/cities-selectors';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import styles from './CitiesList.module.css';
 
-export function CitiesList(cities, onDelete) {
+export function CitiesList() {
+  const items = useSelector(citiesSelector);
+  const dispatch = useDispatch();
+
   return (
-    <ul>
-      {cities.map(cityData => (
-        <li key={cityData.id}>
-          <Card data={cityData} onClick={() => onDelete(cityData.id)}></Card>
-        </li>
-      ))}
-    </ul>
+    <>
+      <h2 className={styles.list_title}>Your places</h2>
+      <ul className={styles.list}>
+        {items.map(cityData => (
+          <li key={cityData.id} className={styles.item}>
+            <Card
+              data={cityData}
+              onClick={() => dispatch(deleteCity(cityData.id))}
+              buttonIcon={<DeleteOutlineIcon />}
+            ></Card>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
-// const mapStateToProps = (  { items }  )  => ({
-
-//     contacts: getVisibleContacts(items),
-//     });
-
-const mapDispatchToProps = dispatch => ({
-  onDelete: id => dispatch(citiesActions.deleteContact(id)),
-});
-export default connect(mapDispatchToProps)(CitiesList);

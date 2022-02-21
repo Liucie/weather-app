@@ -1,5 +1,7 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import citiesReducer from './cities/cities-reducer';
+import { setupListeners } from '@reduxjs/toolkit/dist/query';
+import { weatherApi } from '../services/weatherApi';
+import { citiesReducer } from './cities/cities-reducer';
 import {
   persistStore,
   persistReducer,
@@ -19,20 +21,25 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, citiesReducer);
 
-const middleware = [
-  ...getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-  }),
-];
-
 const store = configureStore({
-  reducer: persistedReducer,
-  middleware,
+  reducer: {
+    [weatherApi.reducerPath]: weatherApi.reducer,
+    cities: persistedReducer,
+  },
+  // middleware,
+  middleware: getDefaultMiddleware => [
+    ...getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+    weatherApi.middleware,
+  ],
   devTools: process.env.NODE_ENV === 'development',
 });
 
 const persistor = persistStore(store);
 
 export default { store, persistor };
+
+setupListeners(store.dispatch);

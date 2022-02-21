@@ -1,44 +1,65 @@
-import { connect } from 'react-redux';
 import { useState } from 'react';
-import { APIservice } from '../../services/weatherAPI';
-import citiesActions from '../../redux/cities/cities-actions';
-import { Button } from '@mui/material';
-import { MapDispatchToProps } from 'react-redux';
+import { useGetWeatherByCityNameQuery } from '../../services/weatherApi';
+import { useDispatch } from 'react-redux';
+import { Loader } from '../Loader/Loader';
+import { Card } from '../Card/Card';
+import { addCity } from '../../redux/cities/cities-reducer';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import styles from './SearchForm.module.css';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 export function SearchForm() {
-  const [searchValue, setSearchValue] = useState('');
+  const [cityName, setCityName] = useState('');
 
-  const handleSearchChange = e => {
-    setSearchValue(e.currentTarget.value);
-  };
+  const { data, error, isFetching, isError } = useGetWeatherByCityNameQuery(
+    cityName,
+    {
+      skip: cityName === '',
+    },
+  );
+
+  const dispatch = useDispatch();
 
   const handleSubmit = e => {
     e.preventDefault();
-    APIservice.getWeather(searchValue).then(result => {});
+    setCityName(e.currentTarget.elements.cityName.value);
+    e.currentTarget.reset();
   };
 
-  // const handleSearchChange = e => {
-  //   setSearchValue(e.currentTarget.value);
-  // };
+  const onAddToList = () => {
+    dispatch(addCity(data));
+  };
+
+  const showNotFoundError = isError && error.status === 404;
+  const showCityData = data && !isFetching && !isError;
+
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <input
-        className="input"
-        type="text"
-        value={searchValue}
-        onChange={handleSearchChange}
-        autoComplete="off"
-        autoFocus
-        placeholder="Search city"
-      />
-      <button type="submit" className="button">
-        Search
-      </button>
-    </form>
+    <>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <input
+          className={styles.input}
+          type="text"
+          name="cityName"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search city"
+        />
+        <button type="submit" className={styles.button}>
+          <SearchOutlinedIcon />
+        </button>
+      </form>
+
+      {isFetching && <Loader />}
+
+      {showNotFoundError && <p>Oops! {cityName} is not found!</p>}
+
+      {showCityData && (
+        <Card
+          data={data}
+          buttonIcon={<AddCircleOutlineIcon />}
+          onClick={onAddToList}
+        ></Card>
+      )}
+    </>
   );
 }
-const mapDispatchToProps = dispatch => ({
-  addCity: data => dispatch(citiesActions.addCityCard(data)),
-});
-
-export default connect(null, mapDispatchToProps)(SearchForm);

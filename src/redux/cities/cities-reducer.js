@@ -1,15 +1,24 @@
-import { createReducer } from '@reduxjs/toolkit';
-import actions from './cities-actions';
+import { createSlice } from '@reduxjs/toolkit';
 
-const items = createReducer([], {
-  [actions.addCityCard]: (state, { payload }) => {
-    if (state.some(item => item.name.includes(payload.name))) {
-      return alert(`${payload.name} is already in Your list`);
-    }
-    return [...state, payload];
+const initialState = {
+  items: [],
+};
+
+export const citiesSlice = createSlice({
+  name: 'cities',
+  initialState,
+  reducers: {
+    addCity(state, action) {
+      if (state.items.some(item => item.name.includes(action.payload.name))) {
+        return alert(`${action.payload.name} is already in Your list`);
+      }
+      state.items.push(action.payload);
+    },
+    deleteCity(state, action) {
+      state.items = state.items.filter(city => city.id !== action.payload);
+    },
   },
-  [actions.deleteCityCard]: (state, { payload }) =>
-    state.filter(({ id }) => id !== payload),
 });
 
-export default items;
+export const { addCity, deleteCity } = citiesSlice.actions;
+export const citiesReducer = citiesSlice.reducer;

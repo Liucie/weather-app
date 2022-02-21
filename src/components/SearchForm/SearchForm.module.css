@@ -1,0 +1,27 @@
+.form {
+  position: relative;
+  width: 300px;
+  margin: 30px auto;
+}
+
+.input {
+  width: 100%;
+  height: 42px;
+  padding-left: 15px;
+  border-radius: 5px;
+  border-color: #e7bbe3;
+  background: transparent;
+  outline: none;
+}
+.button {
+  height: 42px;
+  width: 42px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  border-radius: 5px;
+  border: transparent;
+
+  background: #e7bbe3;
+}

@@ -4,7 +4,7 @@ const API_KEY = '2775e482dafc44474a5e3d9834188ba9';
 export const weatherApi = createApi({
   reducerPath: 'weatherApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://api.openweathermap.org/data/2.5',
+    baseUrl: 'https://api.openweathermap.org/data/2.5',
   }),
   endpoints: builder => ({
     getWeatherByCityName: builder.query({
